@@ -34,7 +34,7 @@
     --risk-medium: 38 92% 50%;
     --risk-high: 0 72% 51%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
   }
 
   .dark {

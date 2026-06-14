@@ -6,12 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "seed": "tsx scripts/seed.ts",
+    "seed": "tsx scripts/import-data.ts mock",
     "import": "tsx scripts/import-data.ts",
     "test:risk": "tsx scripts/test-risk.ts",
-    "test:simulator": "tsx scripts/test-simulator.ts"
+    "test:simulator": "tsx scripts/test-simulator.ts",
+    "test:worldbank": "tsx scripts/test-worldbank.ts"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.1",
@@ -33,6 +34,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",

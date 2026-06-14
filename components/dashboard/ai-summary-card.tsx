@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Brain, Sparkles } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RiskBadge } from "@/components/commodities/risk-badge";
@@ -12,11 +12,6 @@ interface AiSummaryCardProps {
   highCount: number;
 }
 
-/**
- * Dummy AI summary for Phase 3. The text is templated from the computed
- * dashboard summary — NOT a real model call. The live AI generator and the
- * /insights page arrive in Phase 6.
- */
 export function AiSummaryCard({
   riskLevel,
   riskiestCommodity,
@@ -26,34 +21,33 @@ export function AiSummaryCard({
   const summary = buildSummary(riskLevel, riskiestCommodity, highCount);
 
   return (
-    <Card className="border-primary/20 bg-gradient-to-br from-primary/[0.04] to-transparent">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0">
+    <Card className="border-border/80 shadow-none">
+      <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0 pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <Brain className="h-4 w-4" />
-          </span>
-          Ringkasan AI
+          <ClipboardList className="h-4 w-4 text-muted-foreground" />
+          Catatan operasional
         </CardTitle>
         <RiskBadge level={riskLevel} />
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-sm leading-relaxed text-foreground/90">{summary}</p>
+        <p className="text-sm leading-6 text-foreground/90">{summary}</p>
 
         {recommendation && (
-          <div className="rounded-lg border border-border bg-card p-3">
-            <div className="flex items-center gap-1.5 text-xs font-medium text-primary">
-              <Sparkles className="h-3.5 w-3.5" />
-              Rekomendasi utama
-            </div>
-            <p className="mt-1 text-sm text-foreground/90">{recommendation}</p>
+          <div className="border-l-2 border-primary pl-3">
+            <p className="text-xs font-medium uppercase text-muted-foreground">
+              Langkah minggu ini
+            </p>
+            <p className="mt-1 text-sm leading-6 text-foreground/90">
+              {recommendation}
+            </p>
           </div>
         )}
 
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-muted-foreground">
-            Estimasi berbasis data, bukan kepastian harga pasar.
+        <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs leading-5 text-muted-foreground">
+            Dipakai sebagai bahan cek, bukan kepastian harga pasar.
           </p>
-          <Button asChild variant="ghost" size="sm">
+          <Button asChild variant="outline" size="sm">
             <Link href="/insights">Lihat insight lengkap</Link>
           </Button>
         </div>
@@ -74,13 +68,13 @@ function buildSummary(
         ? "sedang"
         : "rendah";
 
-  const lead = `Tingkat risiko biaya bahan baku minggu ini tergolong ${levelText}.`;
+  const lead = `Risiko bahan baku minggu ini berada di level ${levelText}.`;
 
   if (riskiest && highCount > 0) {
-    return `${lead} ${riskiest} menjadi komoditas paling berisiko, dan total ${highCount} komoditas berada di level tinggi. Pergerakan harga global dan kurs USD/IDR perlu dipantau lebih dekat untuk menjaga margin.`;
+    return `${lead} ${riskiest} menjadi bahan yang paling perlu dicek, dengan ${highCount} komoditas masuk kategori tinggi. Prioritaskan cek stok, supplier alternatif, dan margin sebelum pembelian besar.`;
   }
   if (riskiest) {
-    return `${lead} Perhatian utama saat ini ada pada ${riskiest}. Belum ada lonjakan ekstrem, namun tetap pantau supplier dan tren harga.`;
+    return `${lead} Perhatian utama ada pada ${riskiest}. Belum perlu aksi besar, tapi jadwalkan pengecekan harga supplier sebelum restock berikutnya.`;
   }
-  return `${lead} Belum ada komoditas yang memerlukan aksi besar — cukup pantau tren secara berkala.`;
+  return `${lead} Belum ada bahan yang perlu tindakan besar. Tetap cek tren harga secara berkala sebelum restock.`;
 }

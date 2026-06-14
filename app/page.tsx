@@ -1,268 +1,116 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  Radar,
-  TrendingUp,
-  Brain,
+  CalendarClock,
   Calculator,
-  FileText,
-  ShieldCheck,
+  ClipboardCheck,
   Coffee,
   Croissant,
+  FileText,
   Gauge,
-  CircleDollarSign,
+  PackageCheck,
+  Radar,
+  ReceiptText,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+
+const dailyChecks = [
+  {
+    label: "Bahan yang perlu dicek",
+    value: "Tepung",
+    note: "+8,4% bulan ini",
+    tone: "high",
+  },
+  {
+    label: "Kurs USD/IDR",
+    value: "Rp16.230",
+    note: "+1,2% vs bulan lalu",
+    tone: "medium",
+  },
+  {
+    label: "Saran restock",
+    value: "Cek supplier",
+    note: "Sebelum pembelian besar",
+    tone: "low",
+  },
+];
 
 const features = [
   {
     icon: Gauge,
-    title: "Risk Score Otomatis",
-    desc: "Setiap komoditas dinilai Low / Medium / High berdasarkan perubahan harga, kurs, dan volatilitas — disesuaikan dengan jenis bisnis Anda.",
-  },
-  {
-    icon: Brain,
-    title: "Insight AI Bahasa Indonesia",
-    desc: "AI menjelaskan dampak harga global ke biaya bahan baku Anda, lengkap dengan rekomendasi praktis berbasis risiko.",
+    title: "Prioritas risiko",
+    desc: "Komoditas disusun dari yang paling perlu dipantau, lengkap dengan skor dan perubahan harga.",
   },
   {
     icon: Calculator,
-    title: "Simulator Dampak Biaya",
-    desc: "Masukkan komposisi bahan produk Anda dan lihat estimasi margin baru serta rekomendasi harga jual.",
+    title: "Simulasi margin",
+    desc: "Coba skenario harga bahan naik, lalu lihat estimasi margin dan harga jual yang disarankan.",
   },
   {
-    icon: TrendingUp,
-    title: "Tren Harga & Kurs",
-    desc: "Grafik historis komoditas dan kurs USD/IDR yang mudah dibaca, dengan perubahan MoM dan YoY.",
+    icon: ClipboardCheck,
+    title: "Catatan operasional",
+    desc: "Ringkasan praktis untuk restock, cek supplier, dan evaluasi harga jual.",
   },
   {
     icon: FileText,
-    title: "Laporan Mingguan",
-    desc: "Ringkasan risiko dan rekomendasi dalam bentuk laporan rapi yang bisa diunduh sebagai PDF.",
+    title: "Laporan mingguan",
+    desc: "Report risiko bahan baku dalam Bahasa Indonesia, bisa dipreview dan diunduh sebagai PDF.",
+  },
+];
+
+const useCases = [
+  {
+    icon: Croissant,
+    title: "Bakery",
+    desc: "Pantau tepung, gula, dairy, dan minyak sebelum produksi mingguan.",
   },
   {
-    icon: ShieldCheck,
-    title: "Berbasis Risiko, Bukan Ramalan",
-    desc: "Kami tidak menjanjikan harga pasti. Semua insight bersifat estimasi untuk membantu keputusan Anda.",
+    icon: Coffee,
+    title: "Coffee Shop",
+    desc: "Cek dampak kopi, susu, dan gula ke menu minuman yang margin-nya tipis.",
+  },
+  {
+    icon: ReceiptText,
+    title: "Restoran kecil",
+    desc: "Bantu lihat bahan yang sedang menekan biaya operasional harian.",
   },
 ];
 
 const steps = [
-  {
-    no: "01",
-    title: "Buat profil bisnis",
-    desc: "Pilih jenis bisnis, lokasi, margin target, dan budget bahan baku bulanan.",
-  },
-  {
-    no: "02",
-    title: "Lihat radar risiko",
-    desc: "Dashboard menampilkan komoditas paling berisiko untuk bisnis Anda minggu ini.",
-  },
-  {
-    no: "03",
-    title: "Ambil keputusan",
-    desc: "Pakai insight AI dan simulator untuk memutuskan restock, harga jual, atau langkah lain.",
-  },
+  "Isi profil bisnis dan target margin.",
+  "Pantau bahan baku yang risikonya naik.",
+  "Jalankan simulasi sebelum ubah harga jual.",
+  "Simpan insight dan laporan mingguan.",
 ];
 
 export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
 
       <main className="flex-1">
-        {/* ───────────────────────── Hero ───────────────────────── */}
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-grid [mask-image:radial-gradient(ellipse_at_top,black_30%,transparent_75%)]" />
-          <div className="absolute left-1/2 top-0 -z-10 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
-
-          <div className="container relative py-20 md:py-28">
-            <div className="mx-auto max-w-3xl text-center">
-              <Badge className="mb-6 animate-fade-up gap-1.5 px-3 py-1">
-                <Radar className="h-3.5 w-3.5" />
-                AI Commodity & Cost Radar untuk UMKM Indonesia
-              </Badge>
-
-              <h1 className="animate-fade-up text-balance text-4xl font-bold tracking-tight md:text-6xl">
-                Pantau Harga Global,{" "}
-                <span className="text-primary">Pahami Dampaknya</span> ke Bisnis
-                Anda
-              </h1>
-
-              <p className="mx-auto mt-6 max-w-2xl animate-fade-up text-pretty text-lg text-muted-foreground">
-                SupplyWatch AI membantu UMKM Indonesia membaca tren harga
-                komoditas, kurs USD/IDR, dan risiko biaya bahan baku dengan
-                insight AI yang praktis.
-              </p>
-
-              <div className="mt-10 flex animate-fade-up flex-col items-center justify-center gap-3 sm:flex-row">
-                <Button asChild size="lg" className="w-full sm:w-auto">
-                  <Link href="/dashboard">
-                    Coba Demo Dashboard
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="w-full sm:w-auto"
-                >
-                  <Link href="/business-profile">Buat Profil Bisnis</Link>
-                </Button>
-              </div>
-
-              <p className="mt-4 text-xs text-muted-foreground">
-                Mode demo aktif — coba tanpa perlu mendaftar.
-              </p>
-            </div>
-
-            {/* Floating stat preview */}
-            <div className="mx-auto mt-16 grid max-w-4xl animate-fade-up grid-cols-1 gap-4 sm:grid-cols-3">
-              <PreviewStat
-                icon={Gauge}
-                label="Risk Minggu Ini"
-                value="Medium"
-                tone="medium"
-              />
-              <PreviewStat
-                icon={TrendingUp}
-                label="Komoditas Paling Berisiko"
-                value="Tepung (Wheat)"
-                tone="high"
-              />
-              <PreviewStat
-                icon={CircleDollarSign}
-                label="USD/IDR Terakhir"
-                value="Rp16.230"
-                tone="low"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* ──────────────────── Problem statement ──────────────────── */}
-        <section className="border-y border-border/60 bg-muted/30 py-16">
-          <div className="container max-w-3xl text-center">
-            <h2 className="text-2xl font-semibold md:text-3xl">
-              Biaya bahan baku naik diam-diam. Margin Anda yang menanggung.
-            </h2>
-            <p className="mt-4 text-pretty text-muted-foreground">
-              Harga gula, tepung, kopi, minyak, dan susu dipengaruhi pasar global
-              dan kurs USD/IDR. Tanpa pemantauan, UMKM sering terlambat restock,
-              salah waktu beli, atau lupa menyesuaikan harga jual. SupplyWatch AI
-              menerjemahkan data itu menjadi keputusan yang jelas.
-            </p>
-          </div>
-        </section>
-
-        {/* ───────────────────────── Features ───────────────────────── */}
-        <section id="fitur" className="py-20">
-          <div className="container">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-semibold">
-                Bukan sekadar dashboard data
-              </h2>
-              <p className="mt-3 text-muted-foreground">
-                AI menjadi inti produk: menganalisis, menjelaskan, dan
-                merekomendasikan — bukan hanya menampilkan angka.
-              </p>
-            </div>
-
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {features.map((f) => (
-                <div
-                  key={f.title}
-                  className="group rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                    <f.icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="mt-4 font-semibold">{f.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ───────────────────────── Use cases ───────────────────────── */}
-        <section id="use-case" className="border-t border-border/60 bg-muted/30 py-20">
-          <div className="container">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-semibold">Dibuat untuk bisnis Anda</h2>
-              <p className="mt-3 text-muted-foreground">
-                Bobot komoditas disesuaikan dengan jenis usaha, jadi insight-nya
-                relevan.
-              </p>
-            </div>
-
-            <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
-              <UseCaseCard
-                icon={Croissant}
-                title="Bakery"
-                points={[
-                  "Pantau tepung, gula, minyak, dan dairy",
-                  "Simulasi dampak ke harga roti & kue",
-                  "Tahu kapan restock tepung lebih awal",
-                ]}
-              />
-              <UseCaseCard
-                icon={Coffee}
-                title="Coffee Shop"
-                points={[
-                  "Fokus pada kopi & susu sebagai cost driver utama",
-                  "Cek margin es kopi susu saat harga naik",
-                  "Rekomendasi harga jual bertahap",
-                ]}
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* ───────────────────────── How it works ───────────────────────── */}
-        <section id="cara-kerja" className="py-20">
-          <div className="container">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-semibold">Cara kerjanya</h2>
-              <p className="mt-3 text-muted-foreground">
-                Tiga langkah dari data global ke keputusan bisnis.
-              </p>
-            </div>
-
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
-              {steps.map((s) => (
-                <div key={s.no} className="relative rounded-xl border border-border bg-card p-6">
-                  <span className="text-3xl font-bold text-primary/20">
-                    {s.no}
-                  </span>
-                  <h3 className="mt-2 font-semibold">{s.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ───────────────────────── CTA ───────────────────────── */}
-        <section className="py-20">
-          <div className="container">
-            <div className="relative overflow-hidden rounded-2xl bg-primary px-8 py-14 text-center text-primary-foreground">
-              <div className="absolute inset-0 bg-grid opacity-10" />
-              <div className="relative mx-auto max-w-2xl">
-                <h2 className="text-3xl font-semibold">
-                  Mulai pantau biaya bahan baku Anda hari ini
-                </h2>
-                <p className="mt-3 text-primary-foreground/80">
-                  Coba mode demo gratis, atau buat profil bisnis untuk insight
-                  yang dipersonalisasi.
+        <section className="border-b border-border bg-card">
+          <div className="container py-14 md:py-20">
+            <div className="mx-auto max-w-5xl">
+              <div className="max-w-3xl">
+                <p className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                  <Radar className="h-4 w-4 text-primary" />
+                  Radar biaya bahan baku untuk UMKM Indonesia
                 </p>
-                <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                  <Button asChild size="lg" variant="secondary">
+                <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
+                  Jangan beli bahan baku hanya dari feeling.
+                </h1>
+                <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
+                  SupplyWatch membantu pemilik bakery, coffee shop, dan restoran
+                  kecil melihat bahan mana yang perlu dicek sebelum restock,
+                  lengkap dengan dampaknya ke margin.
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <Button asChild size="lg" className="w-full sm:w-auto">
                     <Link href="/dashboard">
-                      Coba Demo Dashboard
+                      Buka Dashboard Demo
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
@@ -270,9 +118,170 @@ export default function LandingPage() {
                     asChild
                     size="lg"
                     variant="outline"
-                    className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                    className="w-full sm:w-auto"
                   >
-                    <Link href="/business-profile">Buat Profil Bisnis</Link>
+                    <Link href="/login?mode=signup">Buat Akun</Link>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="mt-12 rounded-lg border border-border bg-background p-4 shadow-sm">
+                <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold">Ringkasan pagi ini</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Contoh tampilan yang dipakai sebelum belanja bahan.
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-muted px-3 py-1.5 text-xs text-muted-foreground">
+                    <CalendarClock className="h-3.5 w-3.5" />
+                    Diperbarui 08.30
+                  </span>
+                </div>
+
+                <div className="grid gap-3 py-4 md:grid-cols-3">
+                  {dailyChecks.map((item) => (
+                    <DailyCheckCard key={item.label} {...item} />
+                  ))}
+                </div>
+
+                <div className="grid gap-4 border-t border-border pt-4 lg:grid-cols-[1.4fr_1fr]">
+                  <div className="rounded-md border border-border bg-card p-4">
+                    <div className="mb-4 flex items-center justify-between">
+                      <p className="text-sm font-medium">Prioritas pantauan</p>
+                      <span className="text-xs text-muted-foreground">
+                        5 bahan teratas
+                      </span>
+                    </div>
+                    <div className="space-y-3">
+                      <PreviewRow name="Tepung" change="+8,4%" risk="Tinggi" />
+                      <PreviewRow name="Gula" change="+4,1%" risk="Sedang" />
+                      <PreviewRow name="Susu" change="+2,7%" risk="Sedang" />
+                    </div>
+                  </div>
+
+                  <div className="rounded-md border border-border bg-card p-4">
+                    <div className="mb-4 flex items-center gap-2">
+                      <PackageCheck className="h-4 w-4 text-muted-foreground" />
+                      <p className="text-sm font-medium">Saran operasional</p>
+                    </div>
+                    <ul className="space-y-3 text-sm leading-6 text-muted-foreground">
+                      <li>Cek dua supplier tepung sebelum restock besar.</li>
+                      <li>Tunda promo jika margin produk utama turun.</li>
+                      <li>Simpan laporan mingguan untuk evaluasi harga.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-border bg-muted/30 py-14">
+          <div className="container">
+            <div className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:items-center">
+              <div>
+                <p className="text-sm font-medium text-primary">
+                  Masalah yang sering kejadian
+                </p>
+                <h2 className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">
+                  Harga bahan berubah duluan, keputusan bisnis sering belakangan.
+                </h2>
+              </div>
+              <p className="text-base leading-7 text-muted-foreground">
+                Banyak UMKM baru sadar biaya naik setelah margin menipis.
+                SupplyWatch merapikan sinyal dari harga komoditas dan kurs
+                USD/IDR menjadi daftar cek yang lebih mudah dipakai: bahan mana
+                yang naik, seberapa besar dampaknya, dan apa yang sebaiknya
+                dilakukan minggu ini.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="fitur" className="py-16">
+          <div className="container">
+            <SectionHeader
+              eyebrow="Fitur utama"
+              title="Dibuat untuk keputusan operasional, bukan sekadar grafik."
+              desc="Angka tetap penting, tapi yang dibutuhkan pemilik bisnis adalah prioritas dan tindakan."
+            />
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {features.map((feature) => (
+                <FeatureCard key={feature.title} {...feature} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="use-case" className="border-y border-border bg-card py-16">
+          <div className="container">
+            <SectionHeader
+              eyebrow="Use case"
+              title="Mulai dari bisnis yang bahan bakunya sensitif harga."
+              desc="Bobot risiko bisa disesuaikan dengan jenis bisnis supaya hasilnya tidak terlalu umum."
+            />
+
+            <div className="mt-10 grid gap-4 md:grid-cols-3">
+              {useCases.map((item) => (
+                <UseCaseCard key={item.title} {...item} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="cara-kerja" className="py-16">
+          <div className="container">
+            <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+              <div>
+                <p className="text-sm font-medium text-primary">Alur kerja</p>
+                <h2 className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">
+                  Dari data harga ke keputusan restock.
+                </h2>
+                <p className="mt-4 text-base leading-7 text-muted-foreground">
+                  Cocok dipakai sebagai rutinitas mingguan sebelum belanja bahan
+                  atau evaluasi harga jual.
+                </p>
+              </div>
+
+              <div className="divide-y divide-border rounded-lg border border-border bg-card">
+                {steps.map((step, index) => (
+                  <div key={step} className="flex gap-4 p-5">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted text-sm font-medium">
+                      {index + 1}
+                    </span>
+                    <p className="text-sm leading-6">{step}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-border bg-muted/30 py-16">
+          <div className="container">
+            <div className="rounded-lg border border-border bg-card p-6 md:p-8">
+              <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className="text-2xl font-semibold tracking-tight">
+                    Coba dashboard dengan data demo.
+                  </h2>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+                    Tidak perlu daftar untuk melihat alur monitoring. Login
+                    dipakai saat kamu ingin menyimpan insight, simulasi, dan
+                    laporan.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button asChild>
+                    <Link href="/dashboard">
+                      Buka Demo
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline">
+                    <Link href="/login">Masuk</Link>
                   </Button>
                 </div>
               </div>
@@ -281,14 +290,11 @@ export default function LandingPage() {
         </section>
       </main>
 
-      {/* ───────────────────────── Footer ───────────────────────── */}
-      <footer className="border-t border-border/60 py-8">
-        <div className="container flex flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
+      <footer className="border-t border-border py-6">
+        <div className="container flex flex-col gap-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <Radar className="h-4 w-4 text-primary" />
-            <span>
-              SupplyWatch AI · Radar komoditas & biaya untuk UMKM Indonesia
-            </span>
+            <span>SupplyWatch AI</span>
           </div>
           <p className="text-xs">
             Insight bersifat estimasi berbasis data, bukan kepastian harga pasar.
@@ -299,32 +305,92 @@ export default function LandingPage() {
   );
 }
 
-/* ───────────────────────── Helper components ───────────────────────── */
-
-function PreviewStat({
-  icon: Icon,
+function DailyCheckCard({
   label,
   value,
+  note,
   tone,
 }: {
-  icon: React.ElementType;
   label: string;
   value: string;
-  tone: "low" | "medium" | "high";
+  note: string;
+  tone: string;
 }) {
-  const toneClasses = {
-    low: "text-risk-low",
-    medium: "text-risk-medium",
-    high: "text-risk-high",
-  }[tone];
+  const toneClass =
+    tone === "high"
+      ? "bg-risk-high"
+      : tone === "medium"
+        ? "bg-risk-medium"
+        : "bg-risk-low";
 
   return (
-    <div className="rounded-xl border border-border bg-card/80 p-5 text-left shadow-sm backdrop-blur">
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Icon className={`h-4 w-4 ${toneClasses}`} />
-        {label}
+    <div className="rounded-md border border-border bg-card p-4">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-xs font-medium uppercase text-muted-foreground">
+          {label}
+        </p>
+        <span className={`h-2 w-2 rounded-full ${toneClass}`} />
       </div>
-      <p className="mt-2 text-xl font-semibold">{value}</p>
+      <p className="mt-3 text-xl font-semibold">{value}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{note}</p>
+    </div>
+  );
+}
+
+function PreviewRow({
+  name,
+  change,
+  risk,
+}: {
+  name: string;
+  change: string;
+  risk: string;
+}) {
+  return (
+    <div className="grid grid-cols-[1fr_auto_auto] items-center gap-3 text-sm">
+      <span className="font-medium">{name}</span>
+      <span className="tabular-nums text-risk-high">{change}</span>
+      <span className="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">
+        {risk}
+      </span>
+    </div>
+  );
+}
+
+function SectionHeader({
+  eyebrow,
+  title,
+  desc,
+}: {
+  eyebrow: string;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <div className="max-w-2xl">
+      <p className="text-sm font-medium text-primary">{eyebrow}</p>
+      <h2 className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">
+        {title}
+      </h2>
+      <p className="mt-3 text-base leading-7 text-muted-foreground">{desc}</p>
+    </div>
+  );
+}
+
+function FeatureCard({
+  icon: Icon,
+  title,
+  desc,
+}: {
+  icon: React.ElementType;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <div className="rounded-lg border border-border bg-card p-5">
+      <Icon className="h-5 w-5 text-muted-foreground" />
+      <h3 className="mt-4 font-semibold">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-muted-foreground">{desc}</p>
     </div>
   );
 }
@@ -332,28 +398,21 @@ function PreviewStat({
 function UseCaseCard({
   icon: Icon,
   title,
-  points,
+  desc,
 }: {
   icon: React.ElementType;
   title: string;
-  points: string[];
+  desc: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+    <div className="rounded-lg border border-border bg-background p-5">
       <div className="flex items-center gap-3">
-        <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          <Icon className="h-5 w-5" />
+        <span className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
+          <Icon className="h-5 w-5 text-muted-foreground" />
         </span>
-        <h3 className="text-lg font-semibold">{title}</h3>
+        <h3 className="font-semibold">{title}</h3>
       </div>
-      <ul className="mt-4 space-y-2">
-        {points.map((p) => (
-          <li key={p} className="flex items-start gap-2 text-sm text-muted-foreground">
-            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-            {p}
-          </li>
-        ))}
-      </ul>
+      <p className="mt-4 text-sm leading-6 text-muted-foreground">{desc}</p>
     </div>
   );
 }

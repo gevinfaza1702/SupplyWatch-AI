@@ -8,6 +8,7 @@
 // =============================================================================
 
 import { createClient } from "@/lib/supabase/server";
+import { isDemoMode } from "@/lib/demo-mode";
 import {
   getMockCommodities,
   getMockPrices,
@@ -36,6 +37,12 @@ interface RawBundle {
   commodities: CommodityRow[];
   pricesByCommodity: Map<string, CommodityPriceRow[]>;
   fxMomChange: number | null;
+  exchangeRate: {
+    pair: string;
+    latestRate: number | null;
+    latestDate: string | null;
+    momChange: number | null;
+  };
   weightByCommodityId: Map<string, number>;
 }
 
@@ -55,6 +62,50 @@ export async function getCommodities(
     toSummary(c, bundle),
   );
   return { source: bundle.source, commodities };
+}
+
+/**
+ * Commodities + per-commodity history + FX in a SINGLE load. Lets callers
+ * (e.g. the dashboard) avoid re-querying commodity_prices a second time.
+ */
+export interface CommodityBundleResult {
+  source: DataSource;
+  commodities: CommoditySummary[];
+  historyById: Map<string, PricePoint[]>;
+  exchangeRate: {
+    pair: string;
+    latestRate: number | null;
+    latestDate: string | null;
+    momChange: number | null;
+  };
+}
+
+export async function getCommodityBundle(
+  businessType?: BusinessType,
+  opts?: { forceLive?: boolean },
+): Promise<CommodityBundleResult> {
+  const bundle = await loadBundle(businessType, opts);
+  const commodities = bundle.commodities.map((c) => toSummary(c, bundle));
+
+  const historyById = new Map<string, PricePoint[]>();
+  for (const [id, series] of bundle.pricesByCommodity) {
+    historyById.set(
+      id,
+      series.map((p) => ({
+        date: p.price_date,
+        value: p.value,
+        momChange: p.mom_change,
+        yoyChange: p.yoy_change,
+      })),
+    );
+  }
+
+  return {
+    source: bundle.source,
+    commodities,
+    historyById,
+    exchangeRate: bundle.exchangeRate,
+  };
 }
 
 /** One commodity (by slug or id) with full history + risk. */
@@ -117,7 +168,15 @@ function toSummary(c: CommodityRow, bundle: RawBundle): CommoditySummary {
 
 // --- Loading: Supabase first, mock fallback ----------------------------------
 
-async function loadBundle(businessType?: BusinessType): Promise<RawBundle> {
+async function loadBundle(
+  businessType?: BusinessType,
+  opts?: { forceLive?: boolean },
+): Promise<RawBundle> {
+  // Demo mode forces mock data even when Supabase is configured — unless the
+  // caller explicitly wants live data (e.g. when persisting a real insight).
+  if (!opts?.forceLive && (await isDemoMode())) {
+    return buildFromMock(businessType);
+  }
   const fromDb = await tryLoadFromSupabase(businessType);
   return fromDb ?? buildFromMock(businessType);
 }
@@ -224,7 +283,19 @@ function assemble(
       ? fxLatest.rate / fxPrev.rate - 1
       : null;
 
-  return { source, commodities, pricesByCommodity, fxMomChange, weightByCommodityId };
+  return {
+    source,
+    commodities,
+    pricesByCommodity,
+    fxMomChange,
+    exchangeRate: {
+      pair: "USD/IDR",
+      latestRate: fxLatest?.rate ?? null,
+      latestDate: fxLatest?.rate_date ?? null,
+      momChange: fxMomChange,
+    },
+    weightByCommodityId,
+  };
 }
 
 // Mirror of seed.sql weights, keyed by slug -> applied to mock commodity ids.

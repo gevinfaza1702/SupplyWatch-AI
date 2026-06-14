@@ -21,6 +21,8 @@ export const dynamic = "force-dynamic";
 const businessTypeSchema = z.enum(["bakery", "coffee_shop", "restaurant"]);
 const requestSchema = z.object({
   businessType: businessTypeSchema.optional(),
+  /** Regenerate even if a cached insight exists for this period. */
+  force: z.boolean().optional(),
 });
 
 const DEFAULT_WEIGHTS: Record<BusinessType, Record<string, number>> = {
@@ -94,9 +96,33 @@ export async function POST(req: NextRequest) {
   const profile = await loadProfile(supabase, user.id);
   const businessType =
     body.data.businessType ?? profile?.business_type ?? "bakery";
+  const period = getCurrentPeriod();
+
+  // Cache: reuse this period's insight unless the caller forces a refresh.
+  // Saves an AI call (and cost) on repeated visits within the same month.
+  if (!body.data.force) {
+    const { data: existing } = await supabase
+      .from("ai_insights")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("business_type", businessType)
+      .eq("period", period)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (existing) {
+      return NextResponse.json({
+        ok: true,
+        source: "cache",
+        insight: mapInsightRow(existing as AiInsightRow),
+      });
+    }
+  }
 
   try {
-    const dashboard = await getDashboardData(businessType);
+    // Persisted insights must reflect real data, not demo/mock — force live.
+    const dashboard = await getDashboardData(businessType, { forceLive: true });
     const weights = await loadBusinessWeights(supabase, businessType);
     const input = buildInsightInput({
       businessType,
@@ -144,7 +170,7 @@ export async function POST(req: NextRequest) {
     const insertPayload: AiInsightInsert = {
       user_id: user.id,
       business_type: businessType,
-      period: getCurrentPeriod(),
+      period,
       input_snapshot: inputSnapshot,
       summary: insight.summary,
       impact_analysis: insight.impact_analysis,

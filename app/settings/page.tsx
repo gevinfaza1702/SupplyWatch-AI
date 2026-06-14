@@ -5,10 +5,13 @@ import {
   Database,
   KeyRound,
   LogOut,
+  MonitorPlay,
   ShieldCheck,
   UserRound,
 } from "lucide-react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
+import { DemoModeToggle } from "@/components/settings/demo-mode-toggle";
+import { isDemoMode } from "@/lib/demo-mode";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +35,7 @@ const BUSINESS_LABELS: Record<BusinessType, string> = {
 export default async function SettingsPage() {
   const env = getEnvironmentStatus();
   const account = await getAccount();
+  const demoEnabled = await isDemoMode();
 
   if (env.supabaseReady && !account.userEmail) {
     redirect("/login?next=/settings");
@@ -186,6 +190,25 @@ export default async function SettingsPage() {
                 )
               }
             />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MonitorPlay className="h-4 w-4" />
+              Mode Demo
+            </CardTitle>
+            <CardDescription>
+              Pakai data contoh yang stabil untuk demo dan portofolio.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <DemoModeToggle enabled={demoEnabled} />
+            <p className="text-sm leading-6 text-muted-foreground">
+              Saat aktif, dashboard dan komoditas memakai seed data demo. Saat
+              nonaktif, aplikasi membaca data asli dari Supabase (jika tersedia).
+            </p>
           </CardContent>
         </Card>
 
