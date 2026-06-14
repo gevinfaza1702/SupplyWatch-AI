@@ -32,6 +32,22 @@ import type {
 
 export type DataSource = "supabase" | "mock";
 
+/**
+ * How many months of history to load (anchored to today). Needs >=13 for YoY.
+ * Official sources can lag several months, so we use a generous window that
+ * still captures recent data + a full year before it. 7 commodities x 48 mo
+ * stays well under the PostgREST 1000-row default cap.
+ */
+const MONTHS_WINDOW = 48;
+
+/** ISO date (YYYY-MM-01) for N months before today. */
+function isoMonthsAgo(months: number): string {
+  const d = new Date();
+  d.setUTCDate(1);
+  d.setUTCMonth(d.getUTCMonth() - months);
+  return d.toISOString().slice(0, 10);
+}
+
 interface RawBundle {
   source: DataSource;
   commodities: CommodityRow[];
@@ -193,17 +209,25 @@ async function tryLoadFromSupabase(
 
   try {
     const supabase = await createClient();
+
+    // Only the recent window is needed for risk (MoM/YoY/volatility) and charts.
+    // Bounding by date also avoids PostgREST's default 1000-row cap silently
+    // returning the OLDEST rows when a commodity has decades of history.
+    const cutoff = isoMonthsAgo(MONTHS_WINDOW);
+
     const [{ data: commodities }, { data: prices }, { data: fx }] =
       await Promise.all([
         supabase.from("commodities").select("*"),
         supabase
           .from("commodity_prices")
           .select("*")
+          .gte("price_date", cutoff)
           .order("price_date", { ascending: true }),
         supabase
           .from("exchange_rates")
           .select("*")
           .eq("pair", "USD/IDR")
+          .gte("rate_date", cutoff)
           .order("rate_date", { ascending: true }),
       ]);
 

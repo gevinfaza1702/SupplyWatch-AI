@@ -59,9 +59,14 @@ export async function getDashboardData(
   const weeklyRiskLevel: RiskLevel =
     highCount > 0 ? "High" : mediumCount > 0 ? "Medium" : "Low";
 
+  // Chart shows the most recent ~13 months (history is sorted ascending).
   const featuredHistory = riskiest ? historyById.get(riskiest.id) ?? [] : [];
   const featured = riskiest
-    ? { name: riskiest.name, unit: riskiest.unit, history: featuredHistory }
+    ? {
+        name: riskiest.name,
+        unit: riskiest.unit,
+        history: featuredHistory.slice(-13),
+      }
     : null;
 
   return {

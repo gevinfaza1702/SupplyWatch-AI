@@ -127,40 +127,38 @@ create policy "reports_delete_own"
   using (auth.uid() = user_id);
 
 -- -----------------------------------------------------------------------------
--- PUBLIC/SHARED read-only data — authenticated users may SELECT.
+-- PUBLIC/SHARED read-only data — readable by anon AND authenticated, so the
+-- demo dashboard works WITHOUT login. These tables hold no personal data.
 -- (No insert/update/delete policy => only the service-role key can write.)
---
--- If you want the demo dashboard to read these WITHOUT login, change the role
--- below from `authenticated` to `anon, authenticated`.
 -- -----------------------------------------------------------------------------
 drop policy if exists "commodities_read" on public.commodities;
 create policy "commodities_read"
   on public.commodities for select
-  to authenticated
+  to anon, authenticated
   using (true);
 
 drop policy if exists "commodity_prices_read" on public.commodity_prices;
 create policy "commodity_prices_read"
   on public.commodity_prices for select
-  to authenticated
+  to anon, authenticated
   using (true);
 
 drop policy if exists "exchange_rates_read" on public.exchange_rates;
 create policy "exchange_rates_read"
   on public.exchange_rates for select
-  to authenticated
+  to anon, authenticated
   using (true);
 
 drop policy if exists "business_commodity_weights_read" on public.business_commodity_weights;
 create policy "business_commodity_weights_read"
   on public.business_commodity_weights for select
-  to authenticated
+  to anon, authenticated
   using (true);
 
 drop policy if exists "risk_scores_read" on public.risk_scores;
 create policy "risk_scores_read"
   on public.risk_scores for select
-  to authenticated
+  to anon, authenticated
   using (true);
 
 -- data_import_logs: intentionally NO policy for normal users.
