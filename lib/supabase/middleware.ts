@@ -50,15 +50,16 @@ export async function updateSession(request: NextRequest) {
   // Routes that always require authentication.
   const protectedPrefixes = [
     "/business-profile",
+    "/insights",
+    "/reports",
     "/settings",
   ];
 
   const { pathname } = request.nextUrl;
   const needsAuth = protectedPrefixes.some((p) => pathname.startsWith(p));
 
-  // NOTE (Phase 1): /dashboard, /commodities, /insights, /simulator, /reports stay open
-  // so Demo Mode works without login. Auth + per-route gating is finalized in
-  // the auth phase. Truly private pages are guarded now.
+  // Dashboard, commodities, and simulator stay open for demo mode. Pages that
+  // read/write user-owned AI output are guarded here.
   if (!user && needsAuth) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";

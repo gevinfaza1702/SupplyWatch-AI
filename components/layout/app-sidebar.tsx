@@ -11,6 +11,8 @@ import {
   FileText,
   Settings,
   UserCog,
+  LogIn,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,8 +26,12 @@ const nav = [
   { href: "/settings", label: "Pengaturan", icon: Settings },
 ];
 
+interface AppSidebarProps {
+  userEmail?: string | null;
+}
+
 /** Persistent in-app sidebar. Hidden on mobile (DashboardShell adds a top bar). */
-export function AppSidebar() {
+export function AppSidebar({ userEmail }: AppSidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -61,8 +67,35 @@ export function AppSidebar() {
         })}
       </nav>
 
-      <div className="border-t border-border p-4 text-xs text-muted-foreground">
-        Insight bersifat estimasi, bukan kepastian harga pasar.
+      <div className="border-t border-border p-4">
+        {userEmail ? (
+          <div className="space-y-3">
+            <div className="min-w-0">
+              <p className="text-xs text-muted-foreground">Login sebagai</p>
+              <p className="truncate text-sm font-medium">{userEmail}</p>
+            </div>
+            <form action="/auth/sign-out" method="post">
+              <button
+                type="submit"
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
+            </form>
+          </div>
+        ) : (
+          <Link
+            href={`/login?next=${encodeURIComponent(pathname)}`}
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            <LogIn className="h-4 w-4" />
+            Masuk
+          </Link>
+        )}
+        <p className="mt-4 text-xs text-muted-foreground">
+          Insight bersifat estimasi, bukan kepastian harga pasar.
+        </p>
       </div>
     </aside>
   );

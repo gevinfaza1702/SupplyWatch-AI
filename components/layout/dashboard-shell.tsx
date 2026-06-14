@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { Radar } from "lucide-react";
+import { LogIn, Radar } from "lucide-react";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/server";
 
 interface DashboardShellProps {
   title: string;
@@ -15,15 +17,17 @@ interface DashboardShellProps {
  * App layout for authenticated/in-app pages: sidebar + header + content.
  * Used by /dashboard and (later) other in-app pages.
  */
-export function DashboardShell({
+export async function DashboardShell({
   title,
   description,
   actions,
   children,
 }: DashboardShellProps) {
+  const userEmail = await getUserEmail();
+
   return (
     <div className="flex min-h-screen bg-muted/20">
-      <AppSidebar />
+      <AppSidebar userEmail={userEmail} />
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Mobile top brand bar */}
@@ -47,7 +51,17 @@ export function DashboardShell({
                 </p>
               )}
             </div>
-            {actions && <div className="flex items-center gap-2">{actions}</div>}
+            <div className="flex items-center gap-2">
+              {actions}
+              {!userEmail && (
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/login">
+                    <LogIn className="h-4 w-4" />
+                    Masuk
+                  </Link>
+                </Button>
+              )}
+            </div>
           </div>
         </header>
 
@@ -65,4 +79,23 @@ export function DemoModeBadge() {
       Mode Demo
     </Badge>
   );
+}
+
+async function getUserEmail() {
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
+    return null;
+  }
+
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    return user?.email ?? null;
+  } catch {
+    return null;
+  }
 }
