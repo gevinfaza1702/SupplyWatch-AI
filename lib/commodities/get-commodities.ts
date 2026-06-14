@@ -9,6 +9,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { isDemoMode } from "@/lib/demo-mode";
+import { BUSINESS_COMMODITY_WEIGHTS } from "@/lib/commodities/business-weights";
 import {
   getMockCommodities,
   getMockPrices,
@@ -322,27 +323,11 @@ function assemble(
   };
 }
 
-// Mirror of seed.sql weights, keyed by slug -> applied to mock commodity ids.
-const MOCK_WEIGHTS: Record<BusinessType, Record<string, number>> = {
-  bakery: {
-    wheat: 0.9, sugar: 0.7, dairy: 0.55, vegetable_oil: 0.5,
-    cocoa: 0.4, crude_oil: 0.2, coffee: 0.1,
-  },
-  coffee_shop: {
-    coffee: 0.95, dairy: 0.8, sugar: 0.55, cocoa: 0.45,
-    crude_oil: 0.2, wheat: 0.25, vegetable_oil: 0.15,
-  },
-  restaurant: {
-    vegetable_oil: 0.8, wheat: 0.55, sugar: 0.45, dairy: 0.45,
-    crude_oil: 0.35, coffee: 0.2, cocoa: 0.15,
-  },
-};
-
 function mockWeights(
   commodities: CommodityRow[],
   businessType: BusinessType,
 ): Map<string, number> {
-  const bySlug = MOCK_WEIGHTS[businessType];
+  const bySlug = BUSINESS_COMMODITY_WEIGHTS[businessType];
   return new Map(
     commodities.map((c) => [c.id, bySlug[c.slug] ?? 0.5]),
   );

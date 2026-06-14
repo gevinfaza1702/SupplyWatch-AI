@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   },
   description:
     "Pantau harga komoditas global, kurs USD/IDR, dan risiko biaya bahan baku dengan insight AI yang praktis untuk UMKM Indonesia.",
+  icons: {
+    icon: "/supplywatchai.png",
+    apple: "/supplywatchai.png",
+  },
   keywords: [
     "komoditas",
     "UMKM",
@@ -23,6 +27,11 @@ export const metadata: Metadata = {
     "kurs USD IDR",
     "coffee shop",
     "bakery",
+    "warung makan",
+    "katering",
+    "sembako",
+    "harga beras",
+    "harga cabai",
   ],
 };
 

@@ -31,7 +31,16 @@ create table if not exists public.profiles (
   full_name                   text,
   company_name                text,
   business_type               text check (
-                                business_type in ('bakery', 'coffee_shop', 'restaurant')
+                                business_type in (
+                                  'bakery',
+                                  'coffee_shop',
+                                  'restaurant',
+                                  'warung_makan',
+                                  'catering',
+                                  'beverage_shop',
+                                  'fried_snack',
+                                  'grocery_retail'
+                                )
                               ),
   location                    text,
   target_margin               numeric check (target_margin >= 0 and target_margin <= 100),
@@ -110,7 +119,16 @@ create index if not exists idx_exchange_rates_date
 create table if not exists public.business_commodity_weights (
   id               uuid primary key default gen_random_uuid(),
   business_type    text not null check (
-                     business_type in ('bakery', 'coffee_shop', 'restaurant')
+                     business_type in (
+                       'bakery',
+                       'coffee_shop',
+                       'restaurant',
+                       'warung_makan',
+                       'catering',
+                       'beverage_shop',
+                       'fried_snack',
+                       'grocery_retail'
+                     )
                    ),
   commodity_id     uuid not null references public.commodities (id) on delete cascade,
   weight           numeric not null check (weight >= 0 and weight <= 1),
@@ -129,7 +147,16 @@ create table if not exists public.risk_scores (
   id             uuid primary key default gen_random_uuid(),
   commodity_id   uuid not null references public.commodities (id) on delete cascade,
   business_type  text check (
-                   business_type in ('bakery', 'coffee_shop', 'restaurant')
+                   business_type in (
+                     'bakery',
+                     'coffee_shop',
+                     'restaurant',
+                     'warung_makan',
+                     'catering',
+                     'beverage_shop',
+                     'fried_snack',
+                     'grocery_retail'
+                   )
                  ),
   period         text not null,  -- e.g. '2025-W24' or '2025-06'
   score          numeric check (score >= 0 and score <= 100),

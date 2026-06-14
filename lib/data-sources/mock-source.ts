@@ -27,13 +27,24 @@ type MockSpec = {
 };
 
 const SPECS: MockSpec[] = [
-  { name: "Gula (Sugar)", slug: "sugar", category: "Sweetener", unit: "USD/lb", base: 0.21, trend: 0.006, currency: "USD", description: "Harga gula global. Bahan utama bakery dan minuman." },
-  { name: "Gandum (Wheat/Cereal)", slug: "wheat", category: "Grain", unit: "Index (2014=100)", base: 118, trend: 0.004, currency: "USD", description: "Indeks serealia. Penentu biaya tepung untuk roti dan kue." },
-  { name: "Kopi (Coffee)", slug: "coffee", category: "Beverage", unit: "USD/lb", base: 1.85, trend: 0.012, currency: "USD", description: "Harga kopi global (arabika). Cost driver utama coffee shop." },
-  { name: "Susu/Dairy", slug: "dairy", category: "Dairy", unit: "Index (2014=100)", base: 122, trend: 0.003, currency: "USD", description: "Indeks produk susu. Penting untuk latte, kue, dan pastry." },
-  { name: "Minyak Nabati (Veg Oil)", slug: "vegetable_oil", category: "Oil", unit: "Index (2014=100)", base: 128, trend: 0.007, currency: "USD", description: "Indeks minyak nabati. Bahan menggoreng dan baking." },
+  { name: "Gula (Sugar)", slug: "sugar", category: "Sweetener", unit: "USD/lb", base: 0.21, trend: 0.006, currency: "USD", description: "Harga gula global. Bahan utama bakery, minuman, dan toko sembako." },
+  { name: "Gandum (Wheat/Cereal)", slug: "wheat", category: "Grain", unit: "Index (2014=100)", base: 118, trend: 0.004, currency: "USD", description: "Indeks serealia. Penentu biaya tepung untuk roti, mie, dan gorengan." },
+  { name: "Kopi (Coffee)", slug: "coffee", category: "Beverage", unit: "USD/lb", base: 1.85, trend: 0.012, currency: "USD", description: "Harga kopi global (arabika). Cost driver utama kedai kopi dan minuman." },
+  { name: "Susu/Dairy", slug: "dairy", category: "Dairy", unit: "Index (2014=100)", base: 122, trend: 0.003, currency: "USD", description: "Indeks produk susu. Penting untuk latte, kue, pastry, dan minuman." },
+  { name: "Minyak Nabati (Veg Oil)", slug: "vegetable_oil", category: "Oil", unit: "Index (2014=100)", base: 128, trend: 0.007, currency: "USD", description: "Indeks minyak nabati. Bahan menggoreng, baking, dan masakan harian." },
   { name: "Minyak Mentah (Crude Oil)", slug: "crude_oil", category: "Energy", unit: "USD/bbl", base: 78, trend: 0.005, currency: "USD", description: "Harga minyak mentah. Memengaruhi biaya logistik dan kemasan." },
   { name: "Kakao (Cocoa)", slug: "cocoa", category: "Beverage", unit: "USD/tonne", base: 3200, trend: 0.02, currency: "USD", description: "Harga kakao global. Bahan cokelat untuk bakery dan minuman." },
+  { name: "Beras (Rice)", slug: "rice", category: "Staple", unit: "IDR/kg", base: 13500, trend: 0.005, currency: "IDR", description: "Harga beras lokal. Bahan pokok warung makan, katering, dan toko sembako." },
+  { name: "Telur Ayam (Eggs)", slug: "eggs", category: "Protein", unit: "IDR/kg", base: 29000, trend: 0.007, currency: "IDR", description: "Harga telur ayam. Bahan penting untuk bakery, warung makan, dan katering." },
+  { name: "Daging Ayam (Chicken)", slug: "chicken", category: "Protein", unit: "IDR/kg", base: 38000, trend: 0.006, currency: "IDR", description: "Harga daging ayam. Cost driver untuk warung makan, katering, dan restoran." },
+  { name: "Daging Sapi (Beef)", slug: "beef", category: "Protein", unit: "IDR/kg", base: 135000, trend: 0.004, currency: "IDR", description: "Harga daging sapi. Bahan protein bernilai tinggi untuk restoran dan katering." },
+  { name: "Kedelai (Soybean)", slug: "soybean", category: "Legume", unit: "USD/tonne", base: 520, trend: 0.006, currency: "USD", description: "Harga kedelai. Bahan utama tahu, tempe, susu kedelai, dan snack." },
+  { name: "Jagung (Corn)", slug: "corn", category: "Grain", unit: "USD/tonne", base: 210, trend: 0.004, currency: "USD", description: "Harga jagung. Relevan untuk snack, pakan, dan bahan olahan." },
+  { name: "Cabai (Chili)", slug: "chili", category: "Spice", unit: "IDR/kg", base: 45000, trend: 0.018, currency: "IDR", description: "Harga cabai lokal. Sangat sensitif untuk warung makan, katering, dan sambal." },
+  { name: "Bawang Merah (Shallot)", slug: "shallot", category: "Spice", unit: "IDR/kg", base: 36000, trend: 0.012, currency: "IDR", description: "Harga bawang merah. Bumbu utama masakan Indonesia." },
+  { name: "Bawang Putih (Garlic)", slug: "garlic", category: "Spice", unit: "IDR/kg", base: 34000, trend: 0.009, currency: "IDR", description: "Harga bawang putih. Bumbu dasar restoran, warung, dan katering." },
+  { name: "Kemasan (Packaging)", slug: "packaging", category: "Packaging", unit: "Index (2024=100)", base: 100, trend: 0.006, currency: "IDR", description: "Indeks biaya kemasan. Relevan untuk minuman, katering, takeaway, dan retail." },
+  { name: "LPG / Gas Masak", slug: "lpg", category: "Energy", unit: "IDR/kg", base: 18000, trend: 0.005, currency: "IDR", description: "Harga LPG/gas masak. Biaya operasional dapur dan produksi harian." },
 ];
 
 const MONTHS = 13; // 2024-06 .. 2025-06, matching the seed

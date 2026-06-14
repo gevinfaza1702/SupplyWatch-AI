@@ -10,11 +10,24 @@ export const SIMULATOR_INGREDIENTS: Array<{
   slug: SimulatorIngredientSlug;
   label: string;
 }> = [
-  { slug: "sugar", label: "Sugar" },
-  { slug: "wheat", label: "Wheat/Cereal" },
-  { slug: "coffee", label: "Coffee" },
-  { slug: "dairy", label: "Dairy" },
-  { slug: "vegetable_oil", label: "Vegetable Oil" },
+  { slug: "rice", label: "Beras" },
+  { slug: "wheat", label: "Tepung/Gandum" },
+  { slug: "sugar", label: "Gula" },
+  { slug: "coffee", label: "Kopi" },
+  { slug: "dairy", label: "Susu/Dairy" },
+  { slug: "vegetable_oil", label: "Minyak Nabati" },
+  { slug: "eggs", label: "Telur" },
+  { slug: "chicken", label: "Daging Ayam" },
+  { slug: "beef", label: "Daging Sapi" },
+  { slug: "soybean", label: "Kedelai/Tahu/Tempe" },
+  { slug: "corn", label: "Jagung" },
+  { slug: "cocoa", label: "Kakao/Cokelat" },
+  { slug: "chili", label: "Cabai" },
+  { slug: "shallot", label: "Bawang Merah" },
+  { slug: "garlic", label: "Bawang Putih" },
+  { slug: "packaging", label: "Kemasan" },
+  { slug: "lpg", label: "LPG/Gas Masak" },
+  { slug: "crude_oil", label: "Logistik/BBM" },
 ];
 
 export type CommodityImpactMap = Partial<

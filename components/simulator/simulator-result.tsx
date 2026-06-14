@@ -30,6 +30,9 @@ const STATUS_STYLES: Record<SimulatorStatus, string> = {
 
 export function SimulatorResult({ result }: SimulatorResultProps) {
   const suggestions = result.ai?.operational_suggestions ?? [];
+  const visibleBreakdown = result.breakdown.filter(
+    (item) => item.share > 0 || item.addedCost !== 0,
+  );
 
   return (
     <div className="space-y-6">
@@ -144,7 +147,7 @@ export function SimulatorResult({ result }: SimulatorResultProps) {
                 </tr>
               </thead>
               <tbody>
-                {result.breakdown.map((item) => (
+                {visibleBreakdown.map((item) => (
                   <tr key={item.slug} className="border-b border-border/60">
                     <td className="py-3 pr-4 font-medium">{item.name}</td>
                     <td className="py-3 pr-4">{formatPercent(item.share, { fromRatio: true })}</td>
@@ -155,6 +158,13 @@ export function SimulatorResult({ result }: SimulatorResultProps) {
                     <td className="py-3">{item.riskLevel ?? "-"}</td>
                   </tr>
                 ))}
+                {visibleBreakdown.length === 0 && (
+                  <tr>
+                    <td className="py-4 text-muted-foreground" colSpan={5}>
+                      Belum ada komposisi bahan yang diisi.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

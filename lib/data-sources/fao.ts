@@ -34,6 +34,7 @@ const SUBINDEX_MAP: Record<string, string> = {
   // TODO: confirm exact CSV header names.
   "Cereals Price Index": "wheat",
   "Dairy Price Index": "dairy",
+  "Meat Price Index": "chicken",
   "Oils Price Index": "vegetable_oil",
   "Sugar Price Index": "sugar",
 };

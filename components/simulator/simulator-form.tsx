@@ -31,11 +31,24 @@ type SimulatorRunResponse = {
 };
 
 const DEFAULT_INGREDIENTS: IngredientPercent = {
-  sugar: 10,
+  rice: 0,
   wheat: 45,
+  sugar: 10,
   coffee: 0,
   dairy: 10,
   vegetable_oil: 5,
+  eggs: 8,
+  chicken: 0,
+  beef: 0,
+  soybean: 0,
+  corn: 0,
+  cocoa: 0,
+  chili: 0,
+  shallot: 0,
+  garlic: 0,
+  packaging: 4,
+  lpg: 3,
+  crude_oil: 0,
 };
 
 export function SimulatorForm() {
@@ -113,7 +126,7 @@ export function SimulatorForm() {
             Input simulasi
           </CardTitle>
           <CardDescription>
-            Masukkan kondisi produk saat ini dan komposisi bahan utama.
+            Masukkan kondisi produk saat ini dan komposisi bahan atau biaya langsung.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -153,7 +166,7 @@ export function SimulatorForm() {
 
             <div className="space-y-3">
               <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm font-medium">Komposisi bahan</p>
+                <p className="text-sm font-medium">Komposisi bahan dan biaya langsung</p>
                 <p
                   className={cn(
                     "text-sm",
@@ -163,7 +176,7 @@ export function SimulatorForm() {
                   Total {totalPercent.toFixed(1)}%
                 </p>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
                 {SIMULATOR_INGREDIENTS.map((ingredient) => (
                   <NumberField
                     key={ingredient.slug}

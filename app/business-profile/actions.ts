@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { BUSINESS_TYPE_VALUES } from "@/lib/business-types";
 import type { Database } from "@/types/database";
 
 type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
@@ -11,7 +12,7 @@ type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
 const schema = z.object({
   fullName: z.string().trim().max(120).optional(),
   companyName: z.string().trim().max(120).optional(),
-  businessType: z.enum(["bakery", "coffee_shop", "restaurant"]),
+  businessType: z.enum(BUSINESS_TYPE_VALUES),
   location: z.string().trim().max(120).optional(),
   targetMargin: z.coerce.number().min(0).max(100),
   monthlyBudget: z.coerce.number().min(0).optional(),

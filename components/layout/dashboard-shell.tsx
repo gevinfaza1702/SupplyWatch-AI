@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { LogIn, Radar } from "lucide-react";
-import { AppSidebar } from "@/components/layout/app-sidebar";
+import { AppSidebar, MobileBottomNav } from "@/components/layout/app-sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
@@ -65,8 +65,9 @@ export async function DashboardShell({
           </div>
         </header>
 
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-4 pb-24 sm:p-6 md:pb-6">{children}</main>
       </div>
+      <MobileBottomNav />
     </div>
   );
 }

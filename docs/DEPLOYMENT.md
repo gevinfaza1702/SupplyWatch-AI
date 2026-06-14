@@ -30,6 +30,8 @@ Buka **SQL Editor** dan jalankan berurutan (copy-paste isi file):
 1. `supabase/migrations/001_initial_schema.sql`
 2. `supabase/migrations/002_rls_policies.sql`
 3. `supabase/migrations/003_ai_insight_payload_fields.sql`
+4. `supabase/migrations/004_public_read_anon.sql`
+5. `supabase/migrations/005_expand_business_types_and_commodities.sql`
 
 > Alternatif via CLI:
 > ```bash
@@ -40,8 +42,8 @@ Buka **SQL Editor** dan jalankan berurutan (copy-paste isi file):
 ### 2.3 Seed data
 Pilih salah satu:
 
-- **SQL Editor:** jalankan `supabase/seed.sql` (7 komoditas, ~13 bulan harga,
-  kurs USD/IDR, bobot bisnis).
+- **SQL Editor:** jalankan `supabase/seed.sql` (18 komoditas, ~13 bulan harga,
+  kurs USD/IDR, bobot bisnis untuk 8 jenis usaha).
 - **Programmatic:** isi `.env.local` lalu jalankan `npm run seed` (menulis mock
   data lewat import runner; butuh `SUPABASE_SERVICE_ROLE_KEY`).
 

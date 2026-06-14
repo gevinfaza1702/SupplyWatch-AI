@@ -28,18 +28,25 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { RiskBadge } from "@/components/commodities/risk-badge";
+import {
+  BUSINESS_TYPE_OPTIONS,
+  businessTypeLabel,
+  isBusinessType,
+} from "@/lib/business-types";
 import { cn } from "@/lib/utils";
 import type { BusinessType } from "@/types/database";
 import type { InsightView } from "@/types/insight";
 
-const BUSINESS_OPTIONS: Array<{ value: BusinessType; label: string }> = [
-  { value: "bakery", label: "Toko roti" },
-  { value: "coffee_shop", label: "Kedai kopi" },
-  { value: "restaurant", label: "Restoran" },
-];
+const BUSINESS_OPTIONS = BUSINESS_TYPE_OPTIONS;
 
 type LatestResponse = {
   insight: InsightView | null;
+  error?: string;
+  details?: string;
+};
+
+type HistoryResponse = {
+  insights?: InsightView[];
   error?: string;
   details?: string;
 };
@@ -55,13 +62,14 @@ type GenerateResponse = {
 export function InsightsPanel() {
   const [businessType, setBusinessType] = useState<BusinessType>("bakery");
   const [insight, setInsight] = useState<InsightView | null>(null);
+  const [history, setHistory] = useState<InsightView[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [authRequired, setAuthRequired] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    void loadLatest();
+    void loadHistory();
   }, []);
 
   const selectedBusiness = useMemo(
@@ -70,6 +78,41 @@ export function InsightsPanel() {
       "Toko roti",
     [businessType],
   );
+
+  async function loadHistory() {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/insights", {
+        cache: "no-store",
+      });
+      const json = (await response.json()) as HistoryResponse;
+
+      if (response.status === 401) {
+        setAuthRequired(true);
+        setInsight(null);
+        setHistory([]);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(json.error ?? "Riwayat insight gagal dimuat.");
+      }
+
+      const rows = json.insights ?? [];
+      setAuthRequired(false);
+      setHistory(rows);
+      setInsight(rows[0] ?? null);
+      if (rows[0]?.businessType && isBusinessType(rows[0].businessType)) {
+        setBusinessType(rows[0].businessType);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Riwayat insight gagal dimuat.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   async function loadLatest() {
     setIsLoading(true);
@@ -96,6 +139,7 @@ export function InsightsPanel() {
       if (json.insight?.businessType && isBusinessType(json.insight.businessType)) {
         setBusinessType(json.insight.businessType);
       }
+      void loadHistory();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Insight terbaru gagal dimuat.");
     } finally {
@@ -126,6 +170,10 @@ export function InsightsPanel() {
 
       setAuthRequired(false);
       setInsight(json.insight);
+      setHistory((current) => [
+        json.insight!,
+        ...current.filter((item) => item.id !== json.insight!.id),
+      ]);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Insight gagal dibuat.");
     } finally {
@@ -213,7 +261,14 @@ export function InsightsPanel() {
       {isLoading && !authRequired ? (
         <LoadingInsightState />
       ) : !authRequired && insight ? (
-        <InsightResult insight={insight} selectedBusiness={selectedBusiness} />
+        <div className="grid gap-6 xl:grid-cols-[280px_1fr]">
+          <InsightHistory
+            rows={history}
+            selectedId={insight.id}
+            onSelect={setInsight}
+          />
+          <InsightResult insight={insight} selectedBusiness={selectedBusiness} />
+        </div>
       ) : !authRequired ? (
         <EmptyState
           icon={Brain}
@@ -232,6 +287,67 @@ export function InsightsPanel() {
         />
       ) : null}
     </div>
+  );
+}
+
+function InsightHistory({
+  rows,
+  selectedId,
+  onSelect,
+}: {
+  rows: InsightView[];
+  selectedId: string | null;
+  onSelect: (insight: InsightView) => void;
+}) {
+  return (
+    <Card className="h-fit">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <CalendarClock className="h-4 w-4 text-primary" />
+          Riwayat
+        </CardTitle>
+        <CardDescription>Insight tersimpan per user.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        {rows.length ? (
+          <div className="space-y-2">
+            {rows.map((row) => {
+              const active = row.id === selectedId;
+              return (
+                <button
+                  key={row.id}
+                  type="button"
+                  onClick={() => onSelect(row)}
+                  className={cn(
+                    "w-full rounded-lg border p-3 text-left transition-colors",
+                    active
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:bg-muted/50",
+                  )}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="truncate text-sm font-medium">
+                      {businessLabel(row.businessType) ?? "Insight"}
+                    </p>
+                    <RiskBadge level={row.riskLevel} showDot={false} />
+                  </div>
+                  <p className="mt-2 line-clamp-2 text-xs leading-5 text-muted-foreground">
+                    {row.summary ?? "Tanpa ringkasan"}
+                  </p>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    {formatDate(row.createdAt)}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Belum ada riwayat insight.
+          </p>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -410,12 +526,7 @@ function LoadingInsightState() {
 }
 
 function businessLabel(value: string | null): string | null {
-  if (!value || !isBusinessType(value)) return null;
-  return BUSINESS_OPTIONS.find((option) => option.value === value)?.label ?? null;
-}
-
-function isBusinessType(value: string): value is BusinessType {
-  return value === "bakery" || value === "coffee_shop" || value === "restaurant";
+  return businessTypeLabel(value);
 }
 
 function formatDate(value: string): string {

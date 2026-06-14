@@ -8,13 +8,14 @@ import {
   Boxes,
   Brain,
   Calculator,
+  Database,
   FileText,
   Settings,
   UserCog,
   LogIn,
-  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LogoutConfirmDialog } from "@/components/auth/logout-confirm-dialog";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -22,9 +23,16 @@ const nav = [
   { href: "/insights", label: "AI Insights", icon: Brain },
   { href: "/simulator", label: "Simulator", icon: Calculator },
   { href: "/reports", label: "Laporan", icon: FileText },
+  { href: "/data", label: "Data", icon: Database },
   { href: "/business-profile", label: "Profil Bisnis", icon: UserCog },
   { href: "/settings", label: "Pengaturan", icon: Settings },
 ];
+
+const mobileNav = nav.filter((item) =>
+  ["/dashboard", "/commodities", "/insights", "/simulator", "/reports"].includes(
+    item.href,
+  ),
+);
 
 interface AppSidebarProps {
   userEmail?: string | null;
@@ -74,15 +82,7 @@ export function AppSidebar({ userEmail }: AppSidebarProps) {
               <p className="text-xs text-muted-foreground">Login sebagai</p>
               <p className="truncate text-sm font-medium">{userEmail}</p>
             </div>
-            <form action="/auth/sign-out" method="post">
-              <button
-                type="submit"
-                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <LogOut className="h-4 w-4" />
-                Logout
-              </button>
-            </form>
+            <LogoutConfirmDialog variant="sidebar" />
           </div>
         ) : (
           <Link
@@ -98,5 +98,35 @@ export function AppSidebar({ userEmail }: AppSidebarProps) {
         </p>
       </div>
     </aside>
+  );
+}
+
+export function MobileBottomNav() {
+  const pathname = usePathname();
+
+  return (
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-2 py-2 shadow-lg backdrop-blur md:hidden">
+      <div className="grid grid-cols-5 gap-1">
+        {mobileNav.map((item) => {
+          const active =
+            pathname === item.href || pathname.startsWith(item.href + "/");
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex min-w-0 flex-col items-center gap-1 rounded-md px-1 py-1.5 text-[11px] font-medium transition-colors",
+                active
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+            >
+              <item.icon className="h-4 w-4" />
+              <span className="max-w-full truncate">{item.label}</span>
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
   );
 }

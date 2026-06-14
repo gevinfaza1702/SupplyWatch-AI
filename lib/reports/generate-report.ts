@@ -2,11 +2,11 @@ import "server-only";
 
 import { getDashboardData } from "@/lib/dashboard/get-dashboard-data";
 import { createClient } from "@/lib/supabase/server";
+import { BUSINESS_TYPE_LABELS } from "@/lib/business-types";
 import { formatPercent, formatRupiah } from "@/lib/utils";
 import type {
   ActionPlanItem,
   AiInsightRow,
-  BusinessType,
   Json,
   ProfileRow,
   ReportRow,
@@ -14,12 +14,6 @@ import type {
   SimulationResultRow,
 } from "@/types/database";
 import type { ReportView, WeeklyReportContent } from "@/types/report";
-
-const BUSINESS_LABELS: Record<BusinessType, string> = {
-  bakery: "Toko roti",
-  coffee_shop: "Kedai kopi",
-  restaurant: "Restoran",
-};
 
 export async function generateWeeklyReportContent(
   userId: string,
@@ -52,7 +46,7 @@ export async function generateWeeklyReportContent(
     ? mapSimulation(simulationData as SimulationResultRow)
     : null;
   const period = getCurrentWeekPeriod();
-  const businessLabel = BUSINESS_LABELS[businessType];
+  const businessLabel = BUSINESS_TYPE_LABELS[businessType];
   const title = `Laporan Mingguan SupplyWatch AI - ${businessLabel}`;
 
   const actionRecommendations = buildActionRecommendations({

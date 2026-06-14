@@ -2,8 +2,9 @@
 
 **AI Commodity & Cost Radar untuk UMKM Indonesia.**
 
-SupplyWatch AI membantu UMKM F&B (bakery, coffee shop, restoran kecil) memahami
-dampak harga komoditas global dan kurs USD/IDR terhadap biaya bahan baku mereka —
+SupplyWatch AI membantu UMKM F&B dan retail kecil seperti bakery, kedai kopi,
+warung makan, katering, minuman, gorengan, dan toko sembako memahami dampak
+harga komoditas global/lokal dan kurs USD/IDR terhadap biaya bahan baku mereka —
 lalu menerjemahkannya menjadi **risk score**, **insight AI berbahasa Indonesia**,
 dan **rekomendasi bisnis yang praktis**.
 
@@ -132,10 +133,12 @@ supabase/
     001_initial_schema.sql      # tabel, index, constraint, trigger updated_at
     002_rls_policies.sql        # Row Level Security
     003_ai_insight_payload_fields.sql
-  seed.sql                      # 7 komoditas, ~13 bln harga, kurs, bobot bisnis
+    004_public_read_anon.sql
+    005_expand_business_types_and_commodities.sql
+  seed.sql                      # 18 komoditas, ~13 bln harga, kurs, bobot bisnis
 ```
 
-Jalankan ketiga migration berurutan, lalu `seed.sql`. Detail di
+Jalankan migration berurutan, lalu `seed.sql`. Detail di
 [Deployment Guide](docs/DEPLOYMENT.md).
 
 > **Types:** `types/database.ts` ditulis tangan agar repo bisa di-typecheck

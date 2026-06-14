@@ -1,16 +1,11 @@
 import type { AiInsightPayload, InsightGenerationInput } from "@/types/insight";
-import type { BusinessType, RiskLevel } from "@/types/database";
+import type { RiskLevel } from "@/types/database";
+import { BUSINESS_TYPE_LABELS } from "@/lib/business-types";
 import type {
   SimulatorAiPayload,
   SimulatorCalculation,
   SimulatorInput,
 } from "@/types/simulator";
-
-export const BUSINESS_TYPE_LABELS: Record<BusinessType, string> = {
-  bakery: "Toko roti",
-  coffee_shop: "Kedai kopi",
-  restaurant: "Restoran",
-};
 
 const RISK_LABELS: Record<RiskLevel, string> = {
   Low: "rendah",

@@ -4,6 +4,8 @@ import { buildRuleBasedInsight, buildImpactAnalysisPrompt } from "@/lib/ai/promp
 import { safeParseAiInsightJson } from "@/lib/ai/parse-json";
 import { generateAiText } from "@/lib/ai/provider";
 import { getDashboardData } from "@/lib/dashboard/get-dashboard-data";
+import { BUSINESS_TYPE_VALUES } from "@/lib/business-types";
+import { BUSINESS_COMMODITY_WEIGHTS } from "@/lib/commodities/business-weights";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { AiInsightPayload, InsightGenerationInput, InsightView } from "@/types/insight";
@@ -18,42 +20,12 @@ import type {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const businessTypeSchema = z.enum(["bakery", "coffee_shop", "restaurant"]);
+const businessTypeSchema = z.enum(BUSINESS_TYPE_VALUES);
 const requestSchema = z.object({
   businessType: businessTypeSchema.optional(),
   /** Regenerate even if a cached insight exists for this period. */
   force: z.boolean().optional(),
 });
-
-const DEFAULT_WEIGHTS: Record<BusinessType, Record<string, number>> = {
-  bakery: {
-    wheat: 0.9,
-    sugar: 0.7,
-    dairy: 0.55,
-    vegetable_oil: 0.5,
-    cocoa: 0.4,
-    crude_oil: 0.2,
-    coffee: 0.1,
-  },
-  coffee_shop: {
-    coffee: 0.95,
-    dairy: 0.8,
-    sugar: 0.55,
-    cocoa: 0.45,
-    crude_oil: 0.2,
-    wheat: 0.25,
-    vegetable_oil: 0.15,
-  },
-  restaurant: {
-    vegetable_oil: 0.8,
-    wheat: 0.55,
-    sugar: 0.45,
-    dairy: 0.45,
-    crude_oil: 0.35,
-    coffee: 0.2,
-    cocoa: 0.15,
-  },
-};
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 type AiInsightInsert = Database["public"]["Tables"]["ai_insights"]["Insert"];
@@ -280,7 +252,7 @@ function buildInsightInput(args: {
       riskLevel: commodity.riskLevel,
       weight:
         args.weights.get(commodity.id) ??
-        DEFAULT_WEIGHTS[args.businessType][commodity.slug] ??
+        BUSINESS_COMMODITY_WEIGHTS[args.businessType][commodity.slug] ??
         0.5,
     }));
 

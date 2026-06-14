@@ -14,16 +14,27 @@
 -- =============================================================================
 
 -- -----------------------------------------------------------------------------
--- 1) Commodities (7 — 6 required + cocoa)
+-- 1) Commodities (global + local staples for Indonesian UMKM)
 -- -----------------------------------------------------------------------------
 insert into public.commodities (name, slug, category, unit, source, description) values
-  ('Gula (Sugar)',          'sugar',         'Sweetener',  'USD/lb',         'Demo Seed', 'Harga gula global. Bahan utama bakery, coffee shop, dan minuman.'),
-  ('Gandum (Wheat/Cereal)', 'wheat',         'Grain',      'Index (2014=100)', 'Demo Seed', 'Indeks serealia. Penentu biaya tepung untuk roti dan kue.'),
-  ('Kopi (Coffee)',         'coffee',        'Beverage',   'USD/lb',         'Demo Seed', 'Harga kopi global (arabika). Cost driver utama coffee shop.'),
-  ('Susu/Dairy',            'dairy',         'Dairy',      'Index (2014=100)', 'Demo Seed', 'Indeks produk susu. Penting untuk latte, kue, dan pastry.'),
-  ('Minyak Nabati (Veg Oil)','vegetable_oil','Oil',        'Index (2014=100)', 'Demo Seed', 'Indeks minyak nabati. Bahan menggoreng dan baking.'),
-  ('Minyak Mentah (Crude Oil)','crude_oil',  'Energy',     'USD/bbl',        'Demo Seed', 'Harga minyak mentah. Memengaruhi biaya logistik dan kemasan.'),
-  ('Kakao (Cocoa)',         'cocoa',         'Beverage',   'USD/tonne',      'Demo Seed', 'Harga kakao global. Bahan cokelat untuk bakery dan minuman.')
+  ('Gula (Sugar)',            'sugar',         'Sweetener', 'USD/lb',           'Demo Seed', 'Harga gula global. Bahan utama bakery, minuman, dan toko sembako.'),
+  ('Gandum (Wheat/Cereal)',   'wheat',         'Grain',     'Index (2014=100)', 'Demo Seed', 'Indeks serealia. Penentu biaya tepung untuk roti, mie, dan gorengan.'),
+  ('Kopi (Coffee)',           'coffee',        'Beverage',  'USD/lb',           'Demo Seed', 'Harga kopi global (arabika). Cost driver utama kedai kopi dan minuman.'),
+  ('Susu/Dairy',              'dairy',         'Dairy',     'Index (2014=100)', 'Demo Seed', 'Indeks produk susu. Penting untuk latte, kue, pastry, dan minuman.'),
+  ('Minyak Nabati (Veg Oil)', 'vegetable_oil', 'Oil',       'Index (2014=100)', 'Demo Seed', 'Indeks minyak nabati. Bahan menggoreng, baking, dan masakan harian.'),
+  ('Minyak Mentah (Crude Oil)','crude_oil',    'Energy',    'USD/bbl',          'Demo Seed', 'Harga minyak mentah. Memengaruhi biaya logistik dan kemasan.'),
+  ('Kakao (Cocoa)',           'cocoa',         'Beverage',  'USD/tonne',        'Demo Seed', 'Harga kakao global. Bahan cokelat untuk bakery dan minuman.'),
+  ('Beras (Rice)',            'rice',          'Staple',    'IDR/kg',           'Demo Seed', 'Harga beras lokal. Bahan pokok warung makan, katering, dan toko sembako.'),
+  ('Telur Ayam (Eggs)',       'eggs',          'Protein',   'IDR/kg',           'Demo Seed', 'Harga telur ayam. Bahan penting untuk bakery, warung makan, dan katering.'),
+  ('Daging Ayam (Chicken)',   'chicken',       'Protein',   'IDR/kg',           'Demo Seed', 'Harga daging ayam. Cost driver untuk warung makan, katering, dan restoran.'),
+  ('Daging Sapi (Beef)',      'beef',          'Protein',   'IDR/kg',           'Demo Seed', 'Harga daging sapi. Bahan protein bernilai tinggi untuk restoran dan katering.'),
+  ('Kedelai (Soybean)',       'soybean',       'Legume',    'USD/tonne',        'Demo Seed', 'Harga kedelai. Bahan utama tahu, tempe, susu kedelai, dan snack.'),
+  ('Jagung (Corn)',           'corn',          'Grain',     'USD/tonne',        'Demo Seed', 'Harga jagung. Relevan untuk snack, pakan, dan bahan olahan.'),
+  ('Cabai (Chili)',           'chili',         'Spice',     'IDR/kg',           'Demo Seed', 'Harga cabai lokal. Sangat sensitif untuk warung makan, katering, dan sambal.'),
+  ('Bawang Merah (Shallot)',  'shallot',       'Spice',     'IDR/kg',           'Demo Seed', 'Harga bawang merah. Bumbu utama masakan Indonesia.'),
+  ('Bawang Putih (Garlic)',   'garlic',        'Spice',     'IDR/kg',           'Demo Seed', 'Harga bawang putih. Bumbu dasar restoran, warung, dan katering.'),
+  ('Kemasan (Packaging)',     'packaging',     'Packaging', 'Index (2024=100)', 'Demo Seed', 'Indeks biaya kemasan. Relevan untuk minuman, katering, takeaway, dan retail.'),
+  ('LPG / Gas Masak',         'lpg',           'Energy',    'IDR/kg',           'Demo Seed', 'Harga LPG/gas masak. Biaya operasional dapur dan produksi harian.')
 on conflict (slug) do update
   set name = excluded.name,
       category = excluded.category,
@@ -61,7 +72,18 @@ join (values
   ('dairy',         122.0,   0.003,   'USD'),
   ('vegetable_oil', 128.0,   0.007,   'USD'),
   ('crude_oil',     78.0,    0.005,   'USD'),
-  ('cocoa',         3200.0,  0.020,   'USD')
+  ('cocoa',         3200.0,  0.020,   'USD'),
+  ('rice',          13500.0, 0.005,   'IDR'),
+  ('eggs',          29000.0, 0.007,   'IDR'),
+  ('chicken',       38000.0, 0.006,   'IDR'),
+  ('beef',          135000.0,0.004,   'IDR'),
+  ('soybean',       520.0,   0.006,   'USD'),
+  ('corn',          210.0,   0.004,   'USD'),
+  ('chili',         45000.0, 0.018,   'IDR'),
+  ('shallot',       36000.0, 0.012,   'IDR'),
+  ('garlic',        34000.0, 0.009,   'IDR'),
+  ('packaging',     100.0,   0.006,   'IDR'),
+  ('lpg',           18000.0, 0.005,   'IDR')
 ) as s(slug, base, trend, currency) on s.slug = c.slug
 cross join generate_series(0, 12) as m(n)
 on conflict (commodity_id, price_date) do update
@@ -85,38 +107,114 @@ on conflict (pair, rate_date) do update
       source = excluded.source;
 
 -- -----------------------------------------------------------------------------
--- 4) Business commodity weights — Bakery, Coffee Shop, Restaurant
+-- 4) Business commodity weights — broader Indonesian UMKM types.
 --    weight in [0,1]; importance_label is a coarse bucket.
 -- -----------------------------------------------------------------------------
 insert into public.business_commodity_weights (business_type, commodity_id, weight, importance_label)
-select b.business_type, c.id, b.weight, b.importance
+select
+  b.business_type,
+  c.id,
+  b.weight,
+  case
+    when b.weight >= 0.65 then 'high'
+    when b.weight >= 0.35 then 'medium'
+    else 'low'
+  end as importance
 from public.commodities c
 join (values
-  -- business_type, slug,           weight, importance
-  ('bakery',        'wheat',         0.90,  'high'),
-  ('bakery',        'sugar',         0.70,  'high'),
-  ('bakery',        'dairy',         0.55,  'medium'),
-  ('bakery',        'vegetable_oil', 0.50,  'medium'),
-  ('bakery',        'cocoa',         0.40,  'medium'),
-  ('bakery',        'crude_oil',     0.20,  'low'),
-  ('bakery',        'coffee',        0.10,  'low'),
+  -- business_type,    slug,           weight
+  ('bakery',           'wheat',         0.90),
+  ('bakery',           'sugar',         0.75),
+  ('bakery',           'dairy',         0.60),
+  ('bakery',           'eggs',          0.55),
+  ('bakery',           'vegetable_oil', 0.45),
+  ('bakery',           'cocoa',         0.40),
+  ('bakery',           'packaging',     0.25),
+  ('bakery',           'lpg',           0.20),
+  ('bakery',           'coffee',        0.10),
 
-  ('coffee_shop',   'coffee',        0.95,  'high'),
-  ('coffee_shop',   'dairy',         0.80,  'high'),
-  ('coffee_shop',   'sugar',         0.55,  'medium'),
-  ('coffee_shop',   'cocoa',         0.45,  'medium'),
-  ('coffee_shop',   'crude_oil',     0.20,  'low'),
-  ('coffee_shop',   'wheat',         0.25,  'low'),
-  ('coffee_shop',   'vegetable_oil', 0.15,  'low'),
+  ('coffee_shop',      'coffee',        0.95),
+  ('coffee_shop',      'dairy',         0.80),
+  ('coffee_shop',      'sugar',         0.55),
+  ('coffee_shop',      'cocoa',         0.45),
+  ('coffee_shop',      'packaging',     0.30),
+  ('coffee_shop',      'lpg',           0.25),
+  ('coffee_shop',      'wheat',         0.20),
+  ('coffee_shop',      'vegetable_oil', 0.15),
 
-  ('restaurant',    'vegetable_oil', 0.80,  'high'),
-  ('restaurant',    'wheat',         0.55,  'medium'),
-  ('restaurant',    'sugar',         0.45,  'medium'),
-  ('restaurant',    'dairy',         0.45,  'medium'),
-  ('restaurant',    'crude_oil',     0.35,  'medium'),
-  ('restaurant',    'coffee',        0.20,  'low'),
-  ('restaurant',    'cocoa',         0.15,  'low')
-) as b(business_type, slug, weight, importance) on b.slug = c.slug
+  ('restaurant',       'vegetable_oil', 0.80),
+  ('restaurant',       'rice',          0.70),
+  ('restaurant',       'chicken',       0.65),
+  ('restaurant',       'eggs',          0.55),
+  ('restaurant',       'chili',         0.55),
+  ('restaurant',       'shallot',       0.45),
+  ('restaurant',       'garlic',        0.45),
+  ('restaurant',       'beef',          0.40),
+  ('restaurant',       'lpg',           0.40),
+  ('restaurant',       'wheat',         0.35),
+  ('restaurant',       'dairy',         0.20),
+  ('restaurant',       'sugar',         0.20),
+  ('restaurant',       'packaging',     0.20),
+
+  ('warung_makan',     'rice',          0.90),
+  ('warung_makan',     'vegetable_oil', 0.85),
+  ('warung_makan',     'eggs',          0.70),
+  ('warung_makan',     'chicken',       0.65),
+  ('warung_makan',     'chili',         0.65),
+  ('warung_makan',     'shallot',       0.50),
+  ('warung_makan',     'garlic',        0.50),
+  ('warung_makan',     'lpg',           0.45),
+  ('warung_makan',     'soybean',       0.35),
+  ('warung_makan',     'beef',          0.25),
+  ('warung_makan',     'sugar',         0.20),
+
+  ('catering',         'rice',          0.85),
+  ('catering',         'chicken',       0.75),
+  ('catering',         'vegetable_oil', 0.70),
+  ('catering',         'eggs',          0.60),
+  ('catering',         'beef',          0.55),
+  ('catering',         'packaging',     0.50),
+  ('catering',         'lpg',           0.45),
+  ('catering',         'chili',         0.45),
+  ('catering',         'shallot',       0.40),
+  ('catering',         'garlic',        0.40),
+  ('catering',         'dairy',         0.25),
+  ('catering',         'wheat',         0.25),
+
+  ('beverage_shop',    'sugar',         0.90),
+  ('beverage_shop',    'dairy',         0.75),
+  ('beverage_shop',    'coffee',        0.55),
+  ('beverage_shop',    'cocoa',         0.45),
+  ('beverage_shop',    'packaging',     0.50),
+  ('beverage_shop',    'lpg',           0.25),
+  ('beverage_shop',    'vegetable_oil', 0.05),
+
+  ('fried_snack',      'vegetable_oil', 0.95),
+  ('fried_snack',      'wheat',         0.75),
+  ('fried_snack',      'soybean',       0.55),
+  ('fried_snack',      'corn',          0.50),
+  ('fried_snack',      'lpg',           0.45),
+  ('fried_snack',      'chili',         0.35),
+  ('fried_snack',      'packaging',     0.35),
+  ('fried_snack',      'garlic',        0.25),
+  ('fried_snack',      'sugar',         0.25),
+
+  ('grocery_retail',   'rice',          0.95),
+  ('grocery_retail',   'sugar',         0.80),
+  ('grocery_retail',   'vegetable_oil', 0.75),
+  ('grocery_retail',   'eggs',          0.70),
+  ('grocery_retail',   'soybean',       0.50),
+  ('grocery_retail',   'chili',         0.50),
+  ('grocery_retail',   'coffee',        0.45),
+  ('grocery_retail',   'dairy',         0.45),
+  ('grocery_retail',   'shallot',       0.45),
+  ('grocery_retail',   'wheat',         0.40),
+  ('grocery_retail',   'garlic',        0.40),
+  ('grocery_retail',   'lpg',           0.35),
+  ('grocery_retail',   'chicken',       0.30),
+  ('grocery_retail',   'packaging',     0.25),
+  ('grocery_retail',   'beef',          0.25)
+) as b(business_type, slug, weight) on b.slug = c.slug
 on conflict (business_type, commodity_id) do update
   set weight = excluded.weight,
       importance_label = excluded.importance_label;

@@ -6,9 +6,10 @@
 
 ## Problem
 
-UMKM F&B Indonesia — bakery, coffee shop, restoran kecil — sangat sensitif
-terhadap biaya bahan baku. Harga gula, tepung, kopi, susu, minyak, dan kakao
-ditentukan oleh **pasar komoditas global** dan **kurs USD/IDR**. Tapi pemilik
+UMKM F&B Indonesia — bakery, kedai kopi, warung makan, katering, minuman,
+gorengan, dan toko sembako — sangat sensitif terhadap biaya bahan baku. Harga
+beras, telur, ayam, cabai, bawang, gula, tepung, kopi, susu, minyak, kemasan,
+dan LPG dipengaruhi pasar global/lokal serta **kurs USD/IDR**. Tapi pemilik
 UMKM jarang punya waktu atau alat untuk memantaunya.
 
 Akibatnya:

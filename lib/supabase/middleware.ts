@@ -50,6 +50,7 @@ export async function updateSession(request: NextRequest) {
   // Routes that always require authentication.
   const protectedPrefixes = [
     "/business-profile",
+    "/data",
     "/insights",
     "/reports",
     "/settings",

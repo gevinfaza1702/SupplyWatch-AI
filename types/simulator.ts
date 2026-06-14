@@ -14,7 +14,20 @@ export type SimulatorIngredientSlug =
   | "wheat"
   | "coffee"
   | "dairy"
-  | "vegetable_oil";
+  | "vegetable_oil"
+  | "crude_oil"
+  | "cocoa"
+  | "rice"
+  | "eggs"
+  | "chicken"
+  | "beef"
+  | "soybean"
+  | "corn"
+  | "chili"
+  | "shallot"
+  | "garlic"
+  | "packaging"
+  | "lpg";
 
 /** Raw user input from the simulator form. */
 export interface SimulatorInput {
@@ -24,7 +37,7 @@ export interface SimulatorInput {
   targetMargin: number; // percent, e.g. 30
   /**
    * Share of current cost attributable to each ingredient, as ratios.
-   * e.g. { sugar: 0.2, wheat: 0.6, coffee: 0, dairy: 0.1, vegetable_oil: 0.1 }
+   * e.g. { sugar: 0.2, wheat: 0.6, eggs: 0.1, packaging: 0.05 }
    * Shares should sum to <= 1; the remainder is treated as non-commodity cost.
    */
   ingredientMix: IngredientMix;

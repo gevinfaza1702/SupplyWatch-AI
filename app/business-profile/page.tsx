@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { saveBusinessProfile } from "@/app/business-profile/actions";
+import { BUSINESS_TYPE_OPTIONS } from "@/lib/business-types";
 import { cn } from "@/lib/utils";
 import type { ProfileRow } from "@/types/database";
 
@@ -92,11 +93,7 @@ export default async function BusinessProfilePage({ searchParams }: PageProps) {
                   label="Jenis Bisnis"
                   name="businessType"
                   defaultValue={profile?.business_type ?? "bakery"}
-                  options={[
-                    { value: "bakery", label: "Bakery" },
-                    { value: "coffee_shop", label: "Coffee Shop" },
-                    { value: "restaurant", label: "Restoran Kecil" },
-                  ]}
+                  options={BUSINESS_TYPE_OPTIONS}
                 />
                 <Field
                   label="Lokasi"
@@ -151,8 +148,8 @@ export default async function BusinessProfilePage({ searchParams }: PageProps) {
 
               <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 p-3 text-xs text-muted-foreground">
                 <Info className="h-4 w-4 shrink-0" />
-                Jenis bisnis menentukan bobot komoditas (mis. bakery menimbang
-                tepung & gula lebih tinggi) yang dipakai Risk Engine.
+                Jenis bisnis menentukan bobot komoditas, misalnya warung makan
+                lebih sensitif ke beras, telur, ayam, cabai, dan minyak.
               </div>
 
               <Button type="submit" className="w-full" disabled={!envReady}>

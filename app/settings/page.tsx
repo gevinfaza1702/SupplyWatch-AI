@@ -4,13 +4,14 @@ import {
   Bot,
   Database,
   KeyRound,
-  LogOut,
   MonitorPlay,
+  ReceiptText,
   ShieldCheck,
   UserRound,
 } from "lucide-react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { DemoModeToggle } from "@/components/settings/demo-mode-toggle";
+import { SettingsLogoutButton } from "@/components/settings/settings-logout-button";
 import { isDemoMode } from "@/lib/demo-mode";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,15 +23,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
-import type { BusinessType, ProfileRow } from "@/types/database";
+import { BUSINESS_TYPE_LABELS } from "@/lib/business-types";
+import type { ProfileRow } from "@/types/database";
 
 export const metadata = { title: "Pengaturan" };
-
-const BUSINESS_LABELS: Record<BusinessType, string> = {
-  bakery: "Bakery",
-  coffee_shop: "Coffee Shop",
-  restaurant: "Restaurant",
-};
 
 export default async function SettingsPage() {
   const env = getEnvironmentStatus();
@@ -78,7 +74,7 @@ export default async function SettingsPage() {
               label="Bisnis"
               value={
                 account.profile?.business_type
-                  ? BUSINESS_LABELS[account.profile.business_type]
+                  ? BUSINESS_TYPE_LABELS[account.profile.business_type]
                   : "-"
               }
             />
@@ -96,12 +92,7 @@ export default async function SettingsPage() {
                 <Link href="/business-profile">Edit Profil Bisnis</Link>
               </Button>
               {account.userEmail ? (
-                <form action="/auth/sign-out" method="post">
-                  <Button type="submit" variant="destructive">
-                    <LogOut className="h-4 w-4" />
-                    Logout
-                  </Button>
-                </form>
+                <SettingsLogoutButton />
               ) : (
                 <Button asChild>
                   <Link href="/login?next=/settings">Masuk</Link>
@@ -196,6 +187,40 @@ export default async function SettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
+              <ReceiptText className="h-4 w-4" />
+              Aktivitas Tersimpan
+            </CardTitle>
+            <CardDescription>
+              Jumlah data user yang sudah tersimpan di Supabase.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <StatusRow
+              label="AI insights"
+              value={String(account.stats.insights)}
+            />
+            <StatusRow
+              label="Simulasi"
+              value={String(account.stats.simulations)}
+            />
+            <StatusRow
+              label="Laporan"
+              value={String(account.stats.reports)}
+            />
+            <div className="flex flex-wrap gap-2 pt-2">
+              <Button asChild variant="outline" size="sm">
+                <Link href="/insights">Buka Insights</Link>
+              </Button>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/simulator">Buka Simulator</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
               <MonitorPlay className="h-4 w-4" />
               Mode Demo
             </CardTitle>
@@ -263,11 +288,16 @@ export default async function SettingsPage() {
 }
 
 async function getAccount() {
+  const emptyStats = { insights: 0, simulations: 0, reports: 0 };
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
     !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   ) {
-    return { userEmail: null, profile: null as ProfileRow | null };
+    return {
+      userEmail: null,
+      profile: null as ProfileRow | null,
+      stats: emptyStats,
+    };
   }
 
   try {
@@ -277,21 +307,45 @@ async function getAccount() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return { userEmail: null, profile: null as ProfileRow | null };
+      return {
+        userEmail: null,
+        profile: null as ProfileRow | null,
+        stats: emptyStats,
+      };
     }
 
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .maybeSingle();
+    const [profileResult, insightsResult, simulationsResult, reportsResult] =
+      await Promise.all([
+        supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
+        supabase
+          .from("ai_insights")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id),
+        supabase
+          .from("simulation_results")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id),
+        supabase
+          .from("reports")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id),
+      ]);
 
     return {
       userEmail: user.email ?? null,
-      profile: (data as ProfileRow | null) ?? null,
+      profile: (profileResult.data as ProfileRow | null) ?? null,
+      stats: {
+        insights: insightsResult.count ?? 0,
+        simulations: simulationsResult.count ?? 0,
+        reports: reportsResult.count ?? 0,
+      },
     };
   } catch {
-    return { userEmail: null, profile: null as ProfileRow | null };
+    return {
+      userEmail: null,
+      profile: null as ProfileRow | null,
+      stats: emptyStats,
+    };
   }
 }
 

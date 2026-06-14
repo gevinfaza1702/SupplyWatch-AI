@@ -2,7 +2,7 @@
 // GET /api/commodities — list commodities with latest price + risk (Phase 5)
 //
 // Query params:
-//   ?business=bakery|coffee_shop|restaurant   (optional) weight risk by business
+//   ?business=<business_type>   (optional) weight risk by business
 //
 // Returns risk computed by the Risk Engine. Falls back to mock data when
 // Supabase is not configured (response includes `source`).
@@ -10,16 +10,15 @@
 
 import { NextResponse, type NextRequest } from "next/server";
 import { getCommodities } from "@/lib/commodities/get-commodities";
+import { isBusinessType } from "@/lib/business-types";
 import type { BusinessType } from "@/types/database";
 
 export const dynamic = "force-dynamic";
 
-const VALID_BUSINESS: BusinessType[] = ["bakery", "coffee_shop", "restaurant"];
-
 export async function GET(req: NextRequest) {
   const businessParam = req.nextUrl.searchParams.get("business");
   const businessType =
-    businessParam && (VALID_BUSINESS as string[]).includes(businessParam)
+    businessParam && isBusinessType(businessParam)
       ? (businessParam as BusinessType)
       : undefined;
 

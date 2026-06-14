@@ -4,7 +4,10 @@
 // Lightweight deterministic test runnable via: npm run test:simulator
 // =============================================================================
 
-import { calculateCostImpact } from "@/lib/simulator/calculate-cost-impact";
+import {
+  calculateCostImpact,
+  SIMULATOR_INGREDIENTS,
+} from "@/lib/simulator/calculate-cost-impact";
 import type { SimulatorInput } from "@/types/simulator";
 
 let passed = 0;
@@ -63,7 +66,10 @@ assert("estimated new cost is Rp9.167", result.estimatedNewCost === 9167);
 assert("estimated new margin is 38.89%", approx(result.estimatedNewMargin, 38.89));
 assert("recommended price is Rp14.103", result.recommendedPrice === 14103);
 assert("status is Perlu Monitor", result.status === "Perlu Monitor");
-assert("breakdown has 5 ingredients", result.breakdown.length === 5);
+assert(
+  "breakdown covers all supported ingredients",
+  result.breakdown.length === SIMULATOR_INGREDIENTS.length,
+);
 
 console.log(`\n${failed === 0 ? "ok" : "fail"} ${passed} passed, ${failed} failed\n`);
 process.exit(failed === 0 ? 0 : 1);

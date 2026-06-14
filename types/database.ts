@@ -15,7 +15,15 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type BusinessType = "bakery" | "coffee_shop" | "restaurant";
+export type BusinessType =
+  | "bakery"
+  | "coffee_shop"
+  | "restaurant"
+  | "warung_makan"
+  | "catering"
+  | "beverage_shop"
+  | "fried_snack"
+  | "grocery_retail";
 export type RiskLevel = "Low" | "Medium" | "High";
 export type ImportanceLabel = "low" | "medium" | "high";
 export type RestockFrequency = "daily" | "weekly" | "biweekly" | "monthly";

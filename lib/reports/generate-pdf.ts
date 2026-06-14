@@ -9,6 +9,7 @@ import {
   View,
   renderToBuffer,
 } from "@react-pdf/renderer";
+import { businessTypeLabel } from "@/lib/business-types";
 import { formatPercent, formatRupiah } from "@/lib/utils";
 import type { RiskLevel } from "@/types/database";
 import type { WeeklyReportContent } from "@/types/report";
@@ -265,10 +266,7 @@ function riskLabel(level: RiskLevel): string {
 }
 
 function businessLabel(value: WeeklyReportContent["businessProfile"]["businessType"]) {
-  if (value === "bakery") return "Toko roti";
-  if (value === "coffee_shop") return "Kedai kopi";
-  if (value === "restaurant") return "Restoran";
-  return "-";
+  return businessTypeLabel(value) ?? "-";
 }
 
 function formatDate(value: string): string {

@@ -4,16 +4,15 @@
 //
 // `[id]` accepts a slug (e.g. "wheat") or a UUID.
 // Query params:
-//   ?business=bakery|coffee_shop|restaurant   (optional) weight risk by business
+//   ?business=<business_type>   (optional) weight risk by business
 // =============================================================================
 
 import { NextResponse, type NextRequest } from "next/server";
 import { getCommodityDetail } from "@/lib/commodities/get-commodities";
+import { isBusinessType } from "@/lib/business-types";
 import type { BusinessType } from "@/types/database";
 
 export const dynamic = "force-dynamic";
-
-const VALID_BUSINESS: BusinessType[] = ["bakery", "coffee_shop", "restaurant"];
 
 export async function GET(
   req: NextRequest,
@@ -23,7 +22,7 @@ export async function GET(
 
   const businessParam = req.nextUrl.searchParams.get("business");
   const businessType =
-    businessParam && (VALID_BUSINESS as string[]).includes(businessParam)
+    businessParam && isBusinessType(businessParam)
       ? (businessParam as BusinessType)
       : undefined;
 
